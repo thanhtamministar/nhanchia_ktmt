@@ -1,0 +1,263 @@
+
+max_bit=32
+
+def inp_bit_count(min):
+    while True:
+        n=input("input quantity of bits["+str(min)+" , " + str(max_bit) + "]: ")
+        if int(n) in range(min,max_bit+1):
+            break
+    return int(n)
+
+def str_bin(bin_value,num_bit):  # return a string, bin_value: int or string
+    if type(bin_value)==int:
+        a=str(pow(10,max_bit)+bin_value)
+    else:
+        bin_int=int(bin_value)
+        a=str(pow(10,max_bit)+bin_int)
+    tm=a[len(a)-1:len(a)-1-num_bit:-1]
+    return tm[::-1]
+
+def nhan_use2():
+    str1="input MULTIPLICAND: "
+    str2="input MULTIPLIER: "
+    st_element, nd_element=input2var(str1, str2)
+    min=max(len(str(st_element)),len(str(nd_element)))
+    num_bit = inp_bit_count(min)  # require user to input the quantity of bits having min = max(len of 2 element)
+    product_multiplier = int(str(nd_element),2)  # keep decimal value
+    multiplicand = st_element*pow(10,num_bit)  # keep decimal value
+    print("Iteration    ", "     Step                    Multiplicand      Product\Multiplier")
+    print("     0       ", "Initial values     ", "          ", str_bin(st_element,num_bit), "          ",
+          str_bin(nd_element, num_bit * 2))
+    for i in range(num_bit):
+        if product_multiplier % 2 == 1:
+            product_multiplier += int(str(multiplicand),2)
+            print("    ", i + 1, "      ", "1. Prod+=Mcand        ", "       ", str_bin(st_element,num_bit),
+                  "          ", str_bin(bin(product_multiplier)[2:],num_bit*2))
+        else:
+            print("    ", i + 1, "      ", "1. Isb = 0 ==>No operation", "   ", str_bin(st_element,num_bit),
+                  "          ", str_bin(bin(product_multiplier)[2:],num_bit*2))
+        product_multiplier = int(product_multiplier / 2)
+        print("             ", "2: Shift right Product", "       ", str_bin(st_element,num_bit), "          ",
+              str_bin(bin(product_multiplier)[2:], num_bit * 2))
+
+def nhan_use3():
+    str1="input MULTIPLICAND: "
+    str2="input MULTIPLIER: "
+    st_element, nd_element=input2var(str1, str2)
+    min=max(len(str(st_element)),len(str(nd_element)))
+    num_bit = inp_bit_count(min)  # require user to input the quantity of bits having min = max(len of 2 element)
+    product=0       # keep decimal value
+    multiplier=int(str(nd_element),2)      # keep decimal value
+    multiplicand=int(str(st_element),2)         # keep decimal value
+    print("Iteration    ","     Step                    Multiplier      Multiplicand        Product ")
+    print("     0       ","Initial values     ","          ",str_bin(nd_element,num_bit),"          ",str_bin(st_element,num_bit*2),"       ",
+          str_bin( product ,num_bit*2))
+    for i in range(num_bit):
+        if multiplier%2==1:
+            product+=multiplicand
+            print("    ",i+1,"      ","1a: 1==>Prod+=Mcand","          ",str_bin(bin(multiplier)[2:],num_bit),"          ",
+                  str_bin(bin(multiplicand)[2:],num_bit*2),"       ",str_bin(bin(product)[2:], num_bit*2))
+        else:
+            print("    ",i+1,"      ","1: 0==>No operation", "          ", str_bin(bin(multiplier)[2:], num_bit), "          ",
+                  str_bin(bin(multiplicand)[2:], num_bit * 2), "       ", str_bin(bin(product)[2:], num_bit * 2))
+        multiplicand=int(multiplicand*2)
+        print("             ","2: Shift left Mcand","          ",str_bin(bin(multiplier)[2:],num_bit),"          ",
+              str_bin(bin(multiplicand)[2:],num_bit*2),"       ",str_bin(bin(product)[2:], num_bit*2))
+        multiplier=int(multiplier/2)
+        print("             ","3: Shift right Mer ","          ",str_bin(bin(multiplier)[2:],num_bit),"          ",
+              str_bin(bin(multiplicand)[2:],num_bit*2),"       ",str_bin(bin(product)[2:], num_bit*2))
+
+def get_bu2(soam,num_bit):  # so thap phan, am, result: string(1001010...). Ex: get_bu2(-9)=10111
+    string=bin(soam)[3:]
+    string='0'+string
+    tm=''
+    for s in string:
+        if s=='0':
+            tm+='1'
+        else:
+            tm+='0'
+    tm2=int(tm,2)+1
+    result= bin(tm2)[2:]
+    tm3=str_bin(result,max_bit)
+    tm=''
+    for i in tm3:
+        if i=='1':
+            break
+        else:
+            tm+='1'
+    tm+=result
+    if num_bit==max_bit:
+        tm4=tm[::-1]
+    else:
+        tm4=tm[len(tm)-1:len(tm)-1-num_bit:-1]
+    return tm4[::-1]
+
+def chia_use3():
+    str1="input DIVIDEND: "
+    str2="input DIVISOR: "
+    st_element, nd_element=input2var(str1, str2)
+    min=max(len(str(st_element)),len(str(nd_element)))
+    num_bit = inp_bit_count(min)  # require user to input the quantity of bits having min = max(len of 2 element)
+    quotient=0  # keep decimal value
+    divisor=nd_element*pow(10,num_bit)  # keep decimal value
+    remainder=int(str(st_element),2)  # keep decimal value
+    print("   Step    ", "     Action                     Quotient             Divisor               Remainder ")
+    print("     0       ", "Initial values      ", "          ", str_bin(quotient, num_bit), "          ",
+          str_bin(divisor, num_bit * 2), "       ", str_bin(st_element, num_bit * 2))
+    for i in range(num_bit+1):
+        remainder-=int(str(divisor),2)
+        greater0=False
+        if remainder>=0:
+            print("    ",i+1,"      ","R=R-D    ","                     ",str_bin(quotient,num_bit),"          ",
+                      str_bin(divisor,num_bit*2),"       ",str_bin(bin(remainder)[2:], num_bit*2))
+            greater0=True
+        else:
+            print("    ", i + 1, "      ", "R=R-D    ", "                     ", str_bin(quotient, num_bit), "          ",
+                  str_bin(divisor, num_bit * 2), "       ", get_bu2(remainder,num_bit*2))
+        if greater0==False:
+            remainder += int(str(divisor), 2)
+            quotient*=10
+            print("             ","R<0, R=R+D, lshift Q 1 bit","    ",str_bin(quotient,num_bit),"          ",
+              str_bin(divisor,num_bit*2),"       ",str_bin(bin(remainder)[2:], num_bit*2))
+        else:
+            quotient=quotient*10+1
+            print("             ","R>0, lshift Q 1 bit, Q0=1","     ",str_bin(quotient,num_bit),"          ",
+              str_bin(divisor,num_bit*2),"       ",str_bin(bin(remainder)[2:], num_bit*2))
+
+        divisor=int(divisor/10)
+        print("             ","shift right D 1 bit ","          ",str_bin(quotient,num_bit),"          ",
+              str_bin(divisor,num_bit*2),"       ",str_bin(bin(remainder)[2:], num_bit*2))
+
+def sel_type():
+    t=int(input('\nhe so:\ntype(2 or 10 or 16): '))
+    if t==2 or t==10 or t==16:
+        return t
+    else:
+        return 0  # retype
+
+def check_bin(str):
+    for i in str:
+        if i!='0' and i!='1':
+            return False
+    return True
+
+def bin_inp(str1, str2):  # return integer value(1000110...)
+    while True:
+        st_element=input(str1)
+        if check_bin(st_element):
+            st_element=int(st_element)
+            break
+    while True:
+        nd_element=input(str2)
+        if check_bin(nd_element):
+            nd_element=int(nd_element)
+            break
+    return st_element, nd_element
+
+def check_dec(str):
+    for i in str:
+        if i not in "0123456789":
+            return False
+    return True
+
+def dec_inp(str1, str2):  # return integer value(1000110...)
+    while True:
+        st_element=input(str1)
+        if check_dec(st_element):
+            st_element=int(st_element)
+            break
+    st_element=int(bin(st_element)[2:])
+    while True:
+        nd_element=input(str2)
+        if check_dec(nd_element):
+            nd_element=int(nd_element)
+            break
+    nd_element=int(bin(nd_element)[2:])
+    return st_element, nd_element
+
+def check_hex(str):
+    for i in str:
+        if i.lower() not in "abcdef0123456789":
+            return False
+    return True
+
+def hex_2_bin(str):  # return a string
+    st_element = ''
+    for i in str:
+        if i == '0':
+            st_element += '0000'
+        elif i == '1':
+            st_element += '0001'
+        elif i == '2':
+            st_element += '0010'
+        elif i == '3':
+            st_element += '0011'
+        elif i == '4':
+            st_element += '0100'
+        elif i == '5':
+            st_element += '0101'
+        elif i == '6':
+            st_element += '0110'
+        elif i == '7':
+            st_element += '0111'
+        elif i == '8':
+            st_element += '1000'
+        elif i == '9':
+            st_element += '1001'
+        elif i.lower() == 'a':
+            st_element += '1010'
+        elif i.lower() == 'b':
+            st_element += '1011'
+        elif i.lower() == 'c':
+            st_element += '1100'
+        elif i.lower() == 'd':
+            st_element += '1101'
+        elif i.lower() == 'e':
+            st_element += '1110'
+        else:
+            st_element += '1111'
+    return st_element
+
+def hex_inp(str1, str2):  # return integer value(1000110...)
+    while True:
+        st_element_temp=input(str1)
+        if check_hex(st_element_temp):
+            break
+    st_element=int(hex_2_bin(st_element_temp))
+    while True:
+        nd_element_temp=input(str2)
+        if check_hex(nd_element_temp):
+            break
+    nd_element=int(hex_2_bin(nd_element_temp))
+    return st_element, nd_element
+
+def input2var(str1,str2):  # return integer value(1000110...)
+    t=0
+    while t==0:
+        t=sel_type()
+    if t==2:
+        st_element,nd_element=bin_inp(str1, str2)
+    elif t==10:
+        st_element, nd_element=dec_inp(str1, str2)
+    elif t==16:
+        st_element,nd_element=hex_inp(str1, str2)
+    # print(st_element, nd_element)
+    return st_element,nd_element
+
+
+app_quit=False
+
+while not app_quit:
+    print("1: Nhan, su dung 2 thanh ghi\n2: Nhan, su dung 3 thanh ghi\n3: Chia, su dung 3 thanh ghi")
+    select=int(input("select type: "))
+    if select==1:
+        nhan_use2()
+    elif select==2:
+        nhan_use3()
+    elif select==3:
+        chia_use3()
+    cont=input("new(select yes(Y) or no(N)): ")
+    if cont.lower()=='y':
+        continue
+    elif cont.lower()=='n':
+        app_quit=True
